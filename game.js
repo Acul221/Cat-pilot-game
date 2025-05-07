@@ -10,13 +10,17 @@ let gravity = 0.6;
 let jumping = false;
 const speed = 4;
 
+// Runway goyang effect
+let groundShiftX = 0;
+let groundDirection = 1;
+
 // Platform and trap setup
 const groundY = 350;
 const gearTrap = { x: 400, y: groundY - 20, width: 40, height: 20, active: false };
 
 // Load cat sprite
 const catImg = new Image();
-catImg.src = "assets/cat.png"; // pastikan file ini ada di /assets
+catImg.src = "assets/cat.png";
 
 // Keyboard controls
 document.addEventListener("keydown", (e) => {
@@ -39,7 +43,7 @@ document.addEventListener("keyup", (e) => {
 // Draw player using image
 function drawCat() {
   if (catImg.complete) {
-    ctx.drawImage(catImg, x, y, 32, 32); // gambar disesuaikan ukurannya
+    ctx.drawImage(catImg, x, y, 32, 32);
   } else {
     catImg.onload = () => ctx.drawImage(catImg, x, y, 32, 32);
   }
@@ -47,11 +51,11 @@ function drawCat() {
 
 // Draw ground and gear trap
 function drawEnvironment() {
-  // Ground
+  // Ground (runway shifting)
   ctx.fillStyle = "#555";
-  ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+  ctx.fillRect(groundShiftX, groundY, canvas.width, canvas.height - groundY);
 
-  // Gear trap
+  // Gear trap (position fixed, not shifting)
   ctx.fillStyle = gearTrap.active ? "red" : "yellow";
   ctx.fillRect(gearTrap.x, gearTrap.y, gearTrap.width, gearTrap.height);
   ctx.fillStyle = "black";
@@ -77,6 +81,15 @@ function update() {
     vy = 0;
     jumping = false;
   }
+
+  // Runway goyang effect
+  groundShiftX += groundDirection;
+  if (groundShiftX > 10 || groundShiftX < -10) {
+    groundDirection *= -1;
+  }
+
+  // Make character sway with runway slightly
+  x += groundDirection * 0.5;
 
   // Gear trap activation
   if (
