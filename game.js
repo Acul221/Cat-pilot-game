@@ -14,6 +14,10 @@ const speed = 4;
 const groundY = 350;
 const gearTrap = { x: 400, y: groundY - 20, width: 40, height: 20, active: false };
 
+// Load cat sprite
+const catImg = new Image();
+catImg.src = "assets/cat.png"; // pastikan file ini ada di /assets
+
 // Keyboard controls
 document.addEventListener("keydown", (e) => {
   if (e.code === "ArrowRight") {
@@ -32,10 +36,13 @@ document.addEventListener("keyup", (e) => {
   }
 });
 
-// Draw player
+// Draw player using image
 function drawCat() {
-  ctx.fillStyle = "white";
-  ctx.fillRect(x, y, 32, 32);
+  if (catImg.complete) {
+    ctx.drawImage(catImg, x, y, 32, 32); // gambar disesuaikan ukurannya
+  } else {
+    catImg.onload = () => ctx.drawImage(catImg, x, y, 32, 32);
+  }
 }
 
 // Draw ground and gear trap
